@@ -6,6 +6,21 @@
 A Minecraft performance mod for Apple Silicon Macs. Since 0.3.0-alpha.1 it draws the world with its own Metal renderer.
 **Very much alpha:** expect bugs, and back up your worlds.
 
+## This fork: mcopt extras
+
+Everything in mcopt, plus a module (`extras/`) that adds to **Options > Video Settings**, below vanilla's sections:
+
+- **mcopt Performance**: profile, Metal renderer and far terrain (written to `config/mcopt.properties`; restart to apply)
+- **Particles**: all on/off, rain splashes, block breaking and cracking, and a **Particle Types...** page with one switch per type
+- **Animated Textures**: water, lava, fire, portals, sculk, other blocks
+- **Details**: sky, sun and moon, stars, rain and snow, beacon beams, item frame and armor stand names, toasts
+- **Fog**: distance fog and where it starts, biome and dimension fog, underwater view distance, lava, powder snow and effect fog
+- **Glass Style**: the Video Settings screen in a Liquid Glass look (dark or light, frost, rim light, corner radius, blur).
+  Only Video Settings is restyled; the in-game HUD stays vanilla.
+
+These settings are saved in `config/mcopt-extras.properties`. Every push builds the jar on GitHub's Apple Silicon runners
+and publishes it to the [latest pre-release](../../releases/tag/latest).
+
 ## Requirements
 
 - An Apple Silicon Mac on macOS 26 or later
