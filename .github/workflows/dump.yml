@@ -5,6 +5,8 @@ name: api-dump
 # publishing Mojang's code. Delete the branch when done: git push origin --delete api-dump
 on:
   workflow_dispatch:
+  push:
+    branches: [dump-request]
 
 permissions:
   contents: write
