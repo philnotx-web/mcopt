@@ -1,0 +1,25 @@
+{
+	"required": true,
+	"package": "mcopt.extras.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"VideoSettingsScreenMixin",
+		"ScreenGlassMixin",
+		"SelectionListGlassMixin",
+		"ScrollAreaGlassMixin",
+		"ButtonGlassMixin",
+		"SliderGlassMixin",
+		"ParticleEngineMixin",
+		"ClientLevelParticlesMixin",
+		"SpriteContentsMixin",
+		"AnimationStateMixin",
+		"FogRendererMixin",
+		"SkyRendererMixin",
+		"WeatherMixin",
+		"BeaconRendererMixin",
+		"ItemFrameRendererMixin",
+		"ArmorStandRendererMixin",
+		"ToastManagerMixin"
+	],
+	"injectors": { "defaultRequire": 1 }
+}

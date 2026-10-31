@@ -47,11 +47,9 @@ public final class ExtrasConfig implements PreLaunchEntrypoint {
 	public static boolean stars = true;
 	public static boolean weather = true;
 	public static boolean beaconBeam = true;
-	public static boolean pistonAnimation = true;
 	public static boolean itemFrameNames = true;
 	public static boolean armorStandNames = true;
 	public static boolean toasts = true;
-	public static boolean vignette = true;
 
 	// ---- Fog
 	/** Distance fog at the edge of the render distance. */
