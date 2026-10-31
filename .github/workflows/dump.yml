@@ -1,7 +1,7 @@
 name: api-dump
 
-# Development helper: decompiles the game's client code with Loom and stores it, ENCRYPTED with the DUMP_KEY
-# secret, on the "api-dump" branch, so the mod's code can be written against the exact 26.3 classes without
+# Development helper: decompiles the game's client code with Loom and stores it, ENCRYPTED to the public key in
+# .github/dump/pub.pem, on the "api-dump" branch, so the mod's code can be written against the exact 26.3 classes without
 # publishing Mojang's code. Delete the branch when done: git push origin --delete api-dump
 on:
   workflow_dispatch:
@@ -43,16 +43,17 @@ jobs:
           ls -la dump.tar.xz
 
       - name: Encrypt and push
-        env:
-          DUMP_KEY: ${{ secrets.DUMP_KEY }}
         run: |
           set -eu
-          [ -n "$DUMP_KEY" ] || { echo "::error::DUMP_KEY secret missing"; exit 1; }
-          openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in dump.tar.xz -out dump.bin -pass env:DUMP_KEY
+          # a fresh random key for the data, itself encrypted to the public key: only the private key's holder can read it
+          openssl rand -hex 32 > k.txt
+          openssl pkeyutl -encrypt -pubin -inkey .github/dump/pub.pem -pkeyopt rsa_padding_mode:oaep -in k.txt -out key.bin
+          openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in dump.tar.xz -out dump.bin -pass file:k.txt
+          rm -f k.txt
           split -b 40m dump.bin dump.bin.part.
           git config user.name "dump-bot"; git config user.email "dump-bot@users.noreply.github.com"
           git checkout --orphan api-dump
           git rm -rfq --cached . >/dev/null
-          git add -f dump.bin.part.*
+          git add -f key.bin dump.bin.part.*
           git commit -qm "encrypted API dump"
           git push -f origin api-dump

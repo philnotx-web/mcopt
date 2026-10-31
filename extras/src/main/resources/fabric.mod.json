@@ -3,12 +3,11 @@
 	"id": "mcopt-extras",
 	"version": "${version}",
 	"name": "mcopt extras",
-	"description": "A reorganised Video Settings screen, particle/animation/detail toggles, fog controls and a Liquid Glass HUD for mcopt.",
+	"description": "A reorganised Video Settings screen, particle/animation/detail toggles, fog controls and a Liquid Glass Video Settings screen for mcopt.",
 	"license": "Apache-2.0",
 	"authors": ["Noah Dunnagan", "mcopt extras contributors"],
 	"environment": "client",
 	"entrypoints": { "preLaunch": ["mcopt.extras.ExtrasConfig"] },
 	"mixins": ["mcopt-extras.mixins.json"],
-	"depends": { "fabricloader": ">=0.19.5", "minecraft": "~26.3", "java": ">=25" },
-	"breaks": { "mcopt-fps": "*" }
+	"depends": { "fabricloader": ">=0.19.5", "minecraft": "~26.3", "java": ">=25" }
 }

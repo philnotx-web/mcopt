@@ -28,7 +28,7 @@ jobs:
         id: gradle
         run: |
           set -o pipefail
-          ./gradlew :metal:build :extras:build --console=plain --stacktrace 2>&1 | tee build.log
+          ./gradlew :metal:build :fpshud:build :extras:build --console=plain --stacktrace 2>&1 | tee build.log
 
       # Compile errors as annotations, so they can be read through the API without downloading logs.
       - name: Report errors
@@ -45,6 +45,7 @@ jobs:
           mkdir -p dist
           python3 tools/bundle.py \
             --metal "metal/build/libs/metal-$version.jar" \
+            --fps "fpshud/build/libs/fpshud-$version.jar" \
             --nested "mcopt-extras=extras/build/libs/extras-$version.jar" \
             --out "dist/mcopt-$version.jar"
           unzip -l "dist/mcopt-$version.jar" | tail -1

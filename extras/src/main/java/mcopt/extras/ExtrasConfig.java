@@ -67,27 +67,19 @@ public final class ExtrasConfig implements PreLaunchEntrypoint {
 	/** Blindness and Darkness fog are gameplay and stay unless this is on. */
 	public static boolean fogRemoveEffects = false;
 
-	// ---- Liquid Glass HUD
-	public static boolean glassHud = true;
-	public static boolean glassFps = true;
-	/** What the info pill shows besides fps: "fps", "fps+coords", "fps+coords+biome". */
-	public static String glassFpsMode = "fps";
-	public static boolean glassHotbar = true;
-	public static boolean glassStatus = true;
-	public static boolean glassChat = true;
-	public static boolean glassTooltips = true;
+	// ---- Video Settings screen
+	/** Video Settings drawn in the Liquid Glass style (vanilla's layout, glass panels and controls). */
+	public static boolean glassScreen = true;
 	/** 0..100: how strongly the glass is tinted (0 = clear, 100 = frosted). */
 	public static int glassFrost = 55;
 	/** 0..100: the specular rim's brightness. */
 	public static int glassRim = 70;
 	/** Corner radius in GUI pixels. */
 	public static int glassRadius = 8;
-	/** Light or dark glass. */
+	/** Dark or light glass. */
 	public static boolean glassDark = true;
-
-	// ---- Video settings screen
-	/** Replace vanilla's Video Settings with the tabbed screen. */
-	public static boolean tabbedVideoSettings = true;
+	/** Blur the world behind the screen. */
+	public static boolean glassBlur = true;
 
 	private static boolean loaded;
 
