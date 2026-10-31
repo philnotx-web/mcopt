@@ -2,7 +2,7 @@
 """Build the single installable jar: the mcopt-metal jar (natives inside) with the fps counter nested through Fabric's
 jar-in-jar.
 
-  tools/bundle.py --metal METAL.jar --fps FPS.jar --out OUT.jar
+  tools/bundle.py --metal METAL.jar [--fps FPS.jar] [--nested SLUG=JAR ...] --out OUT.jar
 
 The outer jar stays mod id mcopt-metal (java -jar still explains the install). It gains META-INF/jars/<fps jar>, a
 "jars" list in fabric.mod.json, and META-INF/licenses/mcopt-fps/ with the nested jar's own licence files. Sodium is
@@ -16,11 +16,17 @@ LICENCE_NAME = re.compile(r'^(META-INF/)?(LICEN[CS]E|COPYING|NOTICE)[^/]*$', re.
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--metal', required=True)
-    p.add_argument('--fps', required=True)
+    p.add_argument('--fps')
+    p.add_argument('--nested', action='append', default=[], help='SLUG=JAR, nested through jar-in-jar (repeatable)')
     p.add_argument('--out', required=True)
     a = p.parse_args()
 
-    nested = [('mcopt-fps', os.path.basename(a.fps), open(a.fps, 'rb').read())]  # (slug, file name, bytes)
+    nested = []  # (slug, file name, bytes)
+    if a.fps:
+        nested.append(('mcopt-fps', os.path.basename(a.fps), open(a.fps, 'rb').read()))
+    for spec in a.nested:
+        slug, path = spec.split('=', 1)
+        nested.append((slug, os.path.basename(path), open(path, 'rb').read()))
     licences = {}  # archive path -> bytes
     listing = []
     for slug, name, data in nested:

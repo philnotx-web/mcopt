@@ -1,0 +1,64 @@
+name: build
+
+# Builds the single installable jar on an Apple Silicon runner (the native Metal library needs macOS + clang)
+# and publishes it to the "latest" pre-release, so every push gives a downloadable jar.
+on:
+  push:
+    branches: [main, master]
+    paths-ignore: ['**.md']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build
+        id: gradle
+        run: |
+          set -o pipefail
+          ./gradlew :metal:build :extras:build --console=plain --stacktrace 2>&1 | tee build.log
+
+      # Compile errors as annotations, so they can be read through the API without downloading logs.
+      - name: Report errors
+        if: failure() && steps.gradle.outcome == 'failure'
+        run: |
+          grep -E '\.java:[0-9]+: (error|warning)|error:|FAILURE|What went wrong|Mixin|> ' build.log | head -60 | while IFS= read -r line; do
+            echo "::error::$(printf '%s' "$line" | sed 's/%/%25/g')"
+          done
+
+      - name: Bundle
+        run: |
+          version=$(sed -n "s/^version = '\(.*\)'$/\1/p" metal/build.gradle)
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+          mkdir -p dist
+          python3 tools/bundle.py \
+            --metal "metal/build/libs/metal-$version.jar" \
+            --nested "mcopt-extras=extras/build/libs/extras-$version.jar" \
+            --out "dist/mcopt-$version.jar"
+          unzip -l "dist/mcopt-$version.jar" | tail -1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mcopt-${{ env.VERSION }}
+          path: dist/mcopt-${{ env.VERSION }}.jar
+
+      - name: Publish to the "latest" pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create latest "dist/mcopt-$VERSION.jar" --prerelease --target "$GITHUB_SHA" \
+            --title "mcopt $VERSION (latest build)" \
+            --notes "Built automatically from $GITHUB_SHA. Put the jar in your mods folder (Minecraft 26.3, Fabric)."
